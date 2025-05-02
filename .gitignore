@@ -1,0 +1,21 @@
+# Environment files with credentials
+.env
+srcs/.env
+
+# Docker related
+.docker/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Local development
+/data
