@@ -15,7 +15,7 @@ generate_password() {
 # Function to validate domain name format
 validate_domain() {
   local domain=$1
-  if [[ "$domain" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](\.[a-zA-Z]{2,})+$ ]]; then
+  if [[ "$domain" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](\.[a-zA-Z0-9]{2,})+$ ]]; then
     return 0
   elif [[ "$domain" == "localhost" ]]; then
     return 0
@@ -93,6 +93,17 @@ WORDPRESS_DB_USER="$MYSQL_USER"
 WORDPRESS_DB_PASSWORD="$MYSQL_PASSWORD"
 WORDPRESS_DB_NAME="$MYSQL_DATABASE"
 
+# Generate WordPress authentication keys and salts
+echo -e "\n${BLUE}Generating secure WordPress authentication keys and salts...${NC}"
+WORDPRESS_AUTH_KEY=$(generate_password)
+WORDPRESS_SECURE_AUTH_KEY=$(generate_password)
+WORDPRESS_LOGGED_IN_KEY=$(generate_password)
+WORDPRESS_NONCE_KEY=$(generate_password)
+WORDPRESS_AUTH_SALT=$(generate_password)
+WORDPRESS_SECURE_AUTH_SALT=$(generate_password)
+WORDPRESS_LOGGED_IN_SALT=$(generate_password)
+WORDPRESS_NONCE_SALT=$(generate_password)
+
 # WordPress Admin
 read -p "Enter WordPress admin username [default: admin]: " WP_ADMIN_USER
 WP_ADMIN_USER=${WP_ADMIN_USER:-admin}
@@ -121,6 +132,14 @@ sed -i "s/<WP_REGULAR_USER>/$WP_REGULAR_USER/g" "$ENV_PATH"
 sed -i "s/<WP_REGULAR_PASSWORD>/$WP_REGULAR_PASSWORD/g" "$ENV_PATH"
 sed -i "s/<WP_REGULAR_EMAIL>/$WP_REGULAR_EMAIL/g" "$ENV_PATH"
 sed -i "s/example.com/$DOMAIN_NAME/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_AUTH_KEY>/$WORDPRESS_AUTH_KEY/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_SECURE_AUTH_KEY>/$WORDPRESS_SECURE_AUTH_KEY/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_LOGGED_IN_KEY>/$WORDPRESS_LOGGED_IN_KEY/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_NONCE_KEY>/$WORDPRESS_NONCE_KEY/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_AUTH_SALT>/$WORDPRESS_AUTH_SALT/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_SECURE_AUTH_SALT>/$WORDPRESS_SECURE_AUTH_SALT/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_LOGGED_IN_SALT>/$WORDPRESS_LOGGED_IN_SALT/g" "$ENV_PATH"
+sed -i "s/<WORDPRESS_NONCE_SALT>/$WORDPRESS_NONCE_SALT/g" "$ENV_PATH"
 
 # Create a backup of credentials for the user
 CREDENTIALS_FILE="./credentials_backup.txt"
@@ -146,6 +165,16 @@ echo "" >> "$CREDENTIALS_FILE"
 echo "## Access Information" >> "$CREDENTIALS_FILE"
 echo "WordPress URL: https://$DOMAIN_NAME" >> "$CREDENTIALS_FILE"
 echo "WordPress Admin URL: https://$DOMAIN_NAME/wp-admin/" >> "$CREDENTIALS_FILE"
+echo "" >> "$CREDENTIALS_FILE"
+echo "## WordPress Authentication Keys and Salts" >> "$CREDENTIALS_FILE"
+echo "AUTH_KEY: $WORDPRESS_AUTH_KEY" >> "$CREDENTIALS_FILE"
+echo "SECURE_AUTH_KEY: $WORDPRESS_SECURE_AUTH_KEY" >> "$CREDENTIALS_FILE"
+echo "LOGGED_IN_KEY: $WORDPRESS_LOGGED_IN_KEY" >> "$CREDENTIALS_FILE"
+echo "NONCE_KEY: $WORDPRESS_NONCE_KEY" >> "$CREDENTIALS_FILE"
+echo "AUTH_SALT: $WORDPRESS_AUTH_SALT" >> "$CREDENTIALS_FILE"
+echo "SECURE_AUTH_SALT: $WORDPRESS_SECURE_AUTH_SALT" >> "$CREDENTIALS_FILE"
+echo "LOGGED_IN_SALT: $WORDPRESS_LOGGED_IN_SALT" >> "$CREDENTIALS_FILE"
+echo "NONCE_SALT: $WORDPRESS_NONCE_SALT" >> "$CREDENTIALS_FILE"
 
 chmod 600 "$CREDENTIALS_FILE"
 
