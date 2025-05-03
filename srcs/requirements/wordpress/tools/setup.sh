@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Read password from Docker secret if available
+if [ -f "/run/secrets/db_password" ]; then
+    WORDPRESS_DB_PASSWORD=$(cat /run/secrets/db_password)
+    echo "Retrieved database password from secret"
+fi
+
 if [ ! -f /var/www/html/index.php ]; then
     cp -r /var/www/wordpress/* /var/www/html/
     chown -R nobody:nobody /var/www/html

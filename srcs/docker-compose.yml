@@ -44,6 +44,8 @@ services:
       - WP_REGULAR_USER=${WP_REGULAR_USER}
       - WP_REGULAR_PASSWORD=${WP_REGULAR_PASSWORD}
       - WP_REGULAR_EMAIL=${WP_REGULAR_EMAIL}
+    secrets:
+      - db_password
 
   mariadb:
     build:
@@ -56,11 +58,20 @@ services:
     networks:
       - inception_network
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      # - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      # - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    secrets:
+      - db_root_password
+      - db_password
     command: ["mysqld_safe", "--user=mysql"]
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
 
 volumes:
   mariadb_data:

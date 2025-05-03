@@ -2,6 +2,17 @@
 
 set -e
 
+# Read passwords from Docker secrets
+if [ -f "/run/secrets/db_root_password" ]; then
+    MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+    echo "Retrieved root password from secrets"
+fi
+
+if [ -f "/run/secrets/db_password" ]; then
+    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+    echo "Retrieved database password from secrets"
+fi
+
 # Create directories if they don't exist
 mkdir -p /var/lib/mysql /run/mysqld
 chown -R mysql:mysql /var/lib/mysql /run/mysqld

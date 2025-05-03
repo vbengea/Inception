@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 
 # Function to generate a secure random password
 generate_password() {
-  < /dev/urandom tr -dc 'A-Za-z0-9!@#$%^&*()_+?><~' | head -c 16
+  < /dev/urandom tr -dc 'A-Za-z0-9_+-.~=' | head -c 16
 }
 
 # Function to validate domain name format
@@ -118,13 +118,27 @@ WP_REGULAR_PASSWORD=$(generate_password)
 read -p "Enter WordPress regular user email [default: user@$DOMAIN_NAME]: " WP_REGULAR_EMAIL
 WP_REGULAR_EMAIL=${WP_REGULAR_EMAIL:-user@$DOMAIN_NAME}
 
+
+# Create secrets directory
+echo -e "\n${BLUE}Setting up Docker secrets...${NC}"
+SECRETS_DIR="./secrets"
+mkdir -p "$SECRETS_DIR"
+
+# Save database passwords as Docker secrets
+# echo -n "$MYSQL_ROOT_PASSWORD" > "$SECRETS_DIR/db_root_password.txt"
+# echo -n "$MYSQL_PASSWORD" > "$SECRETS_DIR/db_password.txt"
+echo -n "$MYSQL_ROOT_PASSWORD" > "$SECRETS_DIR/db_root_password.txt"
+echo -n "$MYSQL_PASSWORD" > "$SECRETS_DIR/db_password.txt"
+
+# Set proper permissions
+chmod 600 "$SECRETS_DIR/db_root_password.txt"
+chmod 600 "$SECRETS_DIR/db_password.txt"
+echo -e "${GREEN}✓ Docker secrets created${NC}"
+
 # Update the .env file
 echo -e "\n${BLUE}Setting up environment file with secure credentials...${NC}"
-sed -i "s/<MYSQL_ROOT_PASSWORD>/$MYSQL_ROOT_PASSWORD/g" "$ENV_PATH"
 sed -i "s/<MYSQL_USER>/$MYSQL_USER/g" "$ENV_PATH"
-sed -i "s/<MYSQL_PASSWORD>/$MYSQL_PASSWORD/g" "$ENV_PATH"
 sed -i "s/<WORDPRESS_DB_USER>/$WORDPRESS_DB_USER/g" "$ENV_PATH"
-sed -i "s/<WORDPRESS_DB_PASSWORD>/$WORDPRESS_DB_PASSWORD/g" "$ENV_PATH"
 sed -i "s/<WP_ADMIN_USER>/$WP_ADMIN_USER/g" "$ENV_PATH"
 sed -i "s/<WP_ADMIN_PASSWORD>/$WP_ADMIN_PASSWORD/g" "$ENV_PATH"
 sed -i "s/<WP_ADMIN_EMAIL>/$WP_ADMIN_EMAIL/g" "$ENV_PATH"
