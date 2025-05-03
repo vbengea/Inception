@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ ! -f /var/www/html/index.php ]; then
+    cp -r /var/www/wordpress/* /var/www/html/
+    chown -R nobody:nobody /var/www/html
+fi
+
 # Create wp-config.php using environment variables
 if [ ! -f wp-config.php ]; then
     cat > wp-config.php << EOF
