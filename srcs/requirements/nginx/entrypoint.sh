@@ -35,14 +35,14 @@ echo "Nginx configuration updated with domain: ${DOMAIN_NAME}"
 echo "<html><body><h1>NGINX Test Page</h1><p>Domain: ${DOMAIN_NAME}</p><p>This is a test page to verify NGINX is working.</p><p><a href='/domaintest.php'>Check WordPress Domain Configuration</a></p></body></html>" > /var/www/html/test.html
 
 # Ensure localhost entry is in /etc/hosts for both the custom domain and localhost
-if ! grep -q "${DOMAIN_NAME}" /etc/hosts; then
-    echo "127.0.0.1 ${DOMAIN_NAME}" >> /etc/hosts
-    echo "Added ${DOMAIN_NAME} to /etc/hosts"
-fi
+# if ! grep -q "${DOMAIN_NAME}" /etc/hosts; then
+#     echo "127.0.0.1 ${DOMAIN_NAME}" >> /etc/hosts
+#     echo "Added ${DOMAIN_NAME} to /etc/hosts"
+# fi
 
 # Additional domain for WordPress container
-echo "127.0.0.1 wordpress" >> /etc/hosts
-echo "Added wordpress to /etc/hosts"
+# echo "127.0.0.1 wordpress" >> /etc/hosts
+# echo "Added wordpress to /etc/hosts"
 
 # Enable debug logs
 mkdir -p /var/log/nginx
