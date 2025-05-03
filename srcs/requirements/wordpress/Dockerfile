@@ -14,7 +14,13 @@ RUN apk update && apk add --no-cache \
     php8-openssl \
     php8-xml \
     php8-zip \
-    curl
+    php8-phar \
+    php8-iconv \
+    php8-gd \
+    php8-tokenizer \
+    curl \
+    bash \
+    mariadb-client
 
 # Configure PHP-FPM
 RUN mkdir -p /run/php && \
@@ -26,6 +32,11 @@ RUN curl -O https://wordpress.org/latest.tar.gz && \
     tar -xzf latest.tar.gz && \
     rm latest.tar.gz && \
     chown -R nobody:nobody /var/www/wordpress
+
+# Install WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp
 
 # WordPress configuration script
 COPY tools/setup.sh /usr/local/bin/setup.sh

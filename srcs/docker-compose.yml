@@ -18,7 +18,8 @@ services:
     build: requirements/wordpress/.
     container_name: wordpress
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     restart: always
     volumes:
       - wordpress_data:/var/www/html
@@ -66,6 +67,11 @@ services:
       - db_root_password
       - db_password
     command: ["mysqld_safe", "--user=mysql"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 secrets:
   db_root_password:
