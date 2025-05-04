@@ -140,7 +140,7 @@ echo -n "$WORDPRESS_NONCE_SALT" > "$SECRETS_DIR/wp_nonce_salt.txt"
 # Set proper permissions
 # chmod 600 "$SECRETS_DIR/db_root_password.txt"
 # chmod 600 "$SECRETS_DIR/db_password.txt"
-chmod 600 "$SECRETS_DIT/*.txt"
+chmod 600 "$SECRETS_DIR/*.txt"
 echo -e "${GREEN}✓ Docker secrets created${NC}"
 
 # Update the .env file
