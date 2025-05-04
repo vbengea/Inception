@@ -1,11 +1,81 @@
 #!/bin/bash
 set -e
 
-# Read password from Docker secret if available
+# Read all credentials from Docker secrets
+echo "Reading credentials from Docker secrets..."
+
+# Database credentials
 if [ -f "/run/secrets/db_password" ]; then
     WORDPRESS_DB_PASSWORD=$(cat /run/secrets/db_password)
     echo "Retrieved database password from secret"
 fi
+
+# WordPress admin credentials
+if [ -f "/run/secrets/wp_admin_user" ]; then
+    WP_ADMIN_USER=$(cat /run/secrets/wp_admin_user)
+    echo "Retrieved admin username from secret"
+fi
+
+if [ -f "/run/secrets/wp_admin_password" ]; then
+    WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
+    echo "Retrieved admin password from secret"
+fi
+
+if [ -f "/run/secrets/wp_admin_email" ]; then
+    WP_ADMIN_EMAIL=$(cat /run/secrets/wp_admin_email)
+    echo "Retrieved admin email from secret"
+fi
+
+# WordPress regular user credentials
+if [ -f "/run/secrets/wp_regular_user" ]; then
+    WP_REGULAR_USER=$(cat /run/secrets/wp_regular_user)
+    echo "Retrieved regular username from secret"
+fi
+
+if [ -f "/run/secrets/wp_regular_password" ]; then
+    WP_REGULAR_PASSWORD=$(cat /run/secrets/wp_regular_password)
+    echo "Retrieved regular user password from secret"
+fi
+
+if [ -f "/run/secrets/wp_regular_email" ]; then
+    WP_REGULAR_EMAIL=$(cat /run/secrets/wp_regular_email)
+    echo "Retrieved regular user email from secret"
+fi
+
+# WordPress authentication keys and salts
+if [ -f "/run/secrets/wp_auth_key" ]; then
+    WORDPRESS_AUTH_KEY=$(cat /run/secrets/wp_auth_key)
+fi
+
+if [ -f "/run/secrets/wp_secure_auth_key" ]; then
+    WORDPRESS_SECURE_AUTH_KEY=$(cat /run/secrets/wp_secure_auth_key)
+fi
+
+if [ -f "/run/secrets/wp_logged_in_key" ]; then
+    WORDPRESS_LOGGED_IN_KEY=$(cat /run/secrets/wp_logged_in_key)
+fi
+
+if [ -f "/run/secrets/wp_nonce_key" ]; then
+    WORDPRESS_NONCE_KEY=$(cat /run/secrets/wp_nonce_key)
+fi
+
+if [ -f "/run/secrets/wp_auth_salt" ]; then
+    WORDPRESS_AUTH_SALT=$(cat /run/secrets/wp_auth_salt)
+fi
+
+if [ -f "/run/secrets/wp_secure_auth_salt" ]; then
+    WORDPRESS_SECURE_AUTH_SALT=$(cat /run/secrets/wp_secure_auth_salt)
+fi
+
+if [ -f "/run/secrets/wp_logged_in_salt" ]; then
+    WORDPRESS_LOGGED_IN_SALT=$(cat /run/secrets/wp_logged_in_salt)
+fi
+
+if [ -f "/run/secrets/wp_nonce_salt" ]; then
+    WORDPRESS_NONCE_SALT=$(cat /run/secrets/wp_nonce_salt)
+fi
+
+echo "All credentials loaded from secrets"
 
 # Copy WordPress files if they don't exist
 if [ ! -f /var/www/html/index.php ]; then

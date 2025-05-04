@@ -28,25 +28,24 @@ services:
     environment:
       - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
       - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-      - WORDPRESS_AUTH_KEY=${WORDPRESS_AUTH_KEY}
-      - WORDPRESS_SECURE_AUTH_KEY=${WORDPRESS_SECURE_AUTH_KEY}
-      - WORDPRESS_LOGGED_IN_KEY=${WORDPRESS_LOGGED_IN_KEY}
-      - WORDPRESS_NONCE_KEY=${WORDPRESS_NONCE_KEY}
-      - WORDPRESS_AUTH_SALT=${WORDPRESS_AUTH_SALT}
-      - WORDPRESS_SECURE_AUTH_SALT=${WORDPRESS_SECURE_AUTH_SALT}
-      - WORDPRESS_LOGGED_IN_SALT=${WORDPRESS_LOGGED_IN_SALT}
-      - WORDPRESS_NONCE_SALT=${WORDPRESS_NONCE_SALT}
       - DOMAIN_NAME=${DOMAIN_NAME}
-      - WP_ADMIN_USER=${WP_ADMIN_USER}
-      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
-      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
-      - WP_REGULAR_USER=${WP_REGULAR_USER}
-      - WP_REGULAR_PASSWORD=${WP_REGULAR_PASSWORD}
-      - WP_REGULAR_EMAIL=${WP_REGULAR_EMAIL}
     secrets:
       - db_password
+      - wp_admin_user
+      - wp_admin_password
+      - wp_admin_email
+      - wp_regular_user
+      - wp_regular_password
+      - wp_regular_email
+      - wp_auth_key
+      - wp_secure_auth_key
+      - wp_logged_in_key
+      - wp_nonce_key
+      - wp_auth_salt
+      - wp_secure_auth_salt
+      - wp_logged_in_salt
+      - wp_nonce_salt
 
   mariadb:
     build:
@@ -59,10 +58,8 @@ services:
     networks:
       - inception_network
     environment:
-      # - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
-      # - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     secrets:
       - db_root_password
       - db_password
@@ -78,6 +75,34 @@ secrets:
     file: ../secrets/db_root_password.txt
   db_password:
     file: ../secrets/db_password.txt
+  wp_admin_user:
+    file: ../secrets/wp_admin_user.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_admin_email:
+    file: ../secrets/wp_admin_email.txt
+  wp_regular_user:
+    file: ../secrets/wp_regular_user.txt
+  wp_regular_password:
+    file: ../secrets/wp_regular_password.txt
+  wp_regular_email:
+    file: ../secrets/wp_regular_email.txt
+  wp_auth_key:
+    file: ../secrets/wp_auth_key.txt
+  wp_secure_auth_key:
+    file: ../secrets/wp_secure_auth_key.txt
+  wp_logged_in_key:
+    file: ../secrets/wp_logged_in_key.txt
+  wp_nonce_key:
+    file: ../secrets/wp_nonce_key.txt
+  wp_auth_salt:
+    file: ../secrets/wp_auth_salt.txt
+  wp_secure_auth_salt:
+    file: ../secrets/wp_secure_auth_salt.txt
+  wp_logged_in_salt:
+    file: ../secrets/wp_logged_in_salt.txt
+  wp_nonce_salt:
+    file: ../secrets/wp_nonce_salt.txt
 
 volumes:
   mariadb_data:

@@ -1,18 +1,15 @@
 #!/bin/bash
 
-# Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Function to generate a secure random password
 generate_password() {
   < /dev/urandom tr -dc 'A-Za-z0-9_+-.~=' | head -c 16
 }
 
-# Function to validate domain name format
 validate_domain() {
   local domain=$1
   if [[ "$domain" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](\.[a-zA-Z0-9]{2,})+$ ]]; then
@@ -24,7 +21,6 @@ validate_domain() {
   fi
 }
 
-# Function to add domain to hosts file if needed
 add_to_hosts() {
   local domain=$1
   if [[ "$domain" != "localhost" ]]; then
@@ -50,7 +46,6 @@ echo -e "${BLUE}====================================================${NC}"
 
 ENV_PATH="./srcs/.env"
 
-# Check if .env file already exists
 if [ -f "$ENV_PATH" ]; then
   echo -e "${YELLOW}Warning: $ENV_PATH already exists.${NC}"
   read -p "Do you want to regenerate it? This will overwrite your existing configuration. (y/n): " choice
@@ -60,13 +55,10 @@ if [ -f "$ENV_PATH" ]; then
   fi
 fi
 
-# Copy template as a starting point
 cp ./srcs/.env.template "$ENV_PATH"
 
-# Collect or generate necessary information
 echo -e "\n${BLUE}Collecting configuration information...${NC}"
 
-# Domain name with validation
 while true; do
   read -p "Enter your domain name [default: localhost]: " DOMAIN_NAME
   DOMAIN_NAME=${DOMAIN_NAME:-localhost}
@@ -78,7 +70,6 @@ while true; do
   fi
 done
 
-# Add domain to hosts file if it's not localhost
 add_to_hosts "$DOMAIN_NAME"
 
 # Database Credentials
@@ -124,15 +115,32 @@ echo -e "\n${BLUE}Setting up Docker secrets...${NC}"
 SECRETS_DIR="./secrets"
 mkdir -p "$SECRETS_DIR"
 
-# Save database passwords as Docker secrets
-# echo -n "$MYSQL_ROOT_PASSWORD" > "$SECRETS_DIR/db_root_password.txt"
-# echo -n "$MYSQL_PASSWORD" > "$SECRETS_DIR/db_password.txt"
+# Database passwords
 echo -n "$MYSQL_ROOT_PASSWORD" > "$SECRETS_DIR/db_root_password.txt"
 echo -n "$MYSQL_PASSWORD" > "$SECRETS_DIR/db_password.txt"
 
+# WordPress credentials
+echo -n "$WP_ADMIN_USER" > "$SECRETS_DIR/wp_admin_user.txt"
+echo -n "$WP_ADMIN_PASSWORD" > "$SECRETS_DIR/wp_admin_password.txt"
+echo -n "$WP_ADMIN_EMAIL" > "$SECRETS_DIR/wp_admin_email.txt"
+echo -n "$WP_REGULAR_USER" > "$SECRETS_DIR/wp_regular_user.txt"
+echo -n "$WP_REGULAR_PASSWORD" > "$SECRETS_DIR/wp_regular_password.txt"
+echo -n "$WP_REGULAR_EMAIL" > "$SECRETS_DIR/wp_regular_email.txt"
+
+# WordPress salts
+echo -n "$WORDPRESS_AUTH_KEY" > "$SECRETS_DIR/wp_auth_key.txt"
+echo -n "$WORDPRESS_SECURE_AUTH_KEY" > "$SECRETS_DIR/wp_secure_auth_key.txt"
+echo -n "$WORDPRESS_LOGGED_IN_KEY" > "$SECRETS_DIR/wp_logged_in_key.txt"
+echo -n "$WORDPRESS_NONCE_KEY" > "$SECRETS_DIR/wp_nonce_key.txt"
+echo -n "$WORDPRESS_AUTH_SALT" > "$SECRETS_DIR/wp_auth_salt.txt"
+echo -n "$WORDPRESS_SECURE_AUTH_SALT" > "$SECRETS_DIR/wp_secure_auth_salt.txt"
+echo -n "$WORDPRESS_LOGGED_IN_SALT" > "$SECRETS_DIR/wp_logged_in_salt.txt"
+echo -n "$WORDPRESS_NONCE_SALT" > "$SECRETS_DIR/wp_nonce_salt.txt"
+
 # Set proper permissions
-chmod 600 "$SECRETS_DIR/db_root_password.txt"
-chmod 600 "$SECRETS_DIR/db_password.txt"
+# chmod 600 "$SECRETS_DIR/db_root_password.txt"
+# chmod 600 "$SECRETS_DIR/db_password.txt"
+chmod 600 "$SECRETS_DIT/*.txt"
 echo -e "${GREEN}✓ Docker secrets created${NC}"
 
 # Update the .env file
